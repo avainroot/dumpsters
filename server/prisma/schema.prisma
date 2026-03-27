@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Управляющая компания
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  phone     String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  locations Location[]
+}
+
+// Контейнерная площадка
+model Location {
+  id        Int      @id @default(autoincrement())
+  address   String   @unique
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  containers        Container[]
+  locationBuildings LocationBuilding[]
+}
+
+// Контейнер (тип + кол-во на площадке)
+model Container {
+  id           Int      @id @default(autoincrement())
+  volumeLiters Int // объём в литрах: 120, 240, 1100 и т.д.
+  quantity     Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+}
+
+// Справочник домов
+model Building {
+  id      Int    @id @default(autoincrement())
+  address String @unique
+
+  locationBuildings LocationBuilding[]
+}
+
+// M:M площадка ↔ дома
+model LocationBuilding {
+  locationId Int
+  buildingId Int
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@id([locationId, buildingId])
+}
