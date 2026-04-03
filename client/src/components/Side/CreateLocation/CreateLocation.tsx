@@ -7,7 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@components/ui/sheet";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Field, FieldError, FieldLabel } from "@components/ui/field";
@@ -16,6 +16,22 @@ import Company from "../Company/Company";
 import { createLoctionSchema, type TCreateLocation } from "@lib/formSchema";
 import { useMapStore } from "@/store";
 import { useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
+import {
+  CONTAINER_DEFAULT,
+  CONTAINER_QUANTITY_MAX,
+  CONTAINER_QUANTITY_MIN,
+  CONTAINER_VOLUMES,
+} from "@lib/constants";
+import { Slider } from "@components/ui/slider";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Add01Icon } from "@hugeicons/core-free-icons";
 
 const CreateLocation = () => {
   const { sheet } = useMapStore();
@@ -27,7 +43,13 @@ const CreateLocation = () => {
       // companyId: undefined,
       lat: "",
       lng: "",
+      containers: [CONTAINER_DEFAULT],
     },
+  });
+
+  const containers = useFieldArray({
+    control: form.control,
+    name: "containers",
   });
 
   function onSubmit(data: TCreateLocation) {
@@ -142,6 +164,70 @@ const CreateLocation = () => {
                 )}
               />
             </div>
+          </Field>
+          <Field>
+            <FieldLabel>Контейнеры</FieldLabel>
+            {containers.fields.map((field, index) => {
+              return (
+                <div key={index} className="flex flex-col gap-2">
+                  <div className="flex items-center gap-4">
+                    <Slider
+                      value={[field.quantity]}
+                      onValueChange={(quntity) =>
+                        containers.update(index, {
+                          ...field,
+                          ...{ quantity: quntity[0] },
+                        })
+                      }
+                      min={CONTAINER_QUANTITY_MIN}
+                      max={CONTAINER_QUANTITY_MAX}
+                      step={CONTAINER_QUANTITY_MIN}
+                    />
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 text-right">{field.quantity}x</div>
+                      <Select
+                        value={String(field.volumeLiters)}
+                        onValueChange={(v) =>
+                          containers.update(index, {
+                            ...field,
+                            ...{ volumeLiters: Number(v) },
+                          })
+                        }
+                      >
+                        <SelectTrigger className="w-24">
+                          <SelectValue placeholder="Объём контейнера" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CONTAINER_VOLUMES.map((volume) => (
+                            <SelectItem
+                              key={volume}
+                              value={String(volume)}
+                            >{`${String(volume)}л`}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {containers.fields.length < 5 && (
+              <div className="flex justify-end items-center gap-2">
+                <div>Добавить контейнер</div>
+                <Button
+                  size="icon"
+                  type="button"
+                  onClick={() => containers.append(CONTAINER_DEFAULT)}
+                >
+                  <HugeiconsIcon
+                    icon={Add01Icon}
+                    size={24}
+                    color="currentColor"
+                    strokeWidth={1.5}
+                  />
+                </Button>
+              </div>
+            )}
           </Field>
         </div>
 

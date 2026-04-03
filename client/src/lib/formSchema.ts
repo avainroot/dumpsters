@@ -5,6 +5,12 @@ const phoneSchema = z.string().refine((val) => isValidPhoneNumber(val), {
   message: "Некорректный номер телефона",
 });
 
+export const containerSchema = z.object({
+  // id: z.number(),
+  volumeLiters: z.number(),
+  quantity: z.number(),
+});
+
 export const createLoctionSchema = z.object({
   address: z.string().min(1, "Укажите адрес площадки"),
   companyId: z.number("Выберите управляющую компанию"),
@@ -16,6 +22,9 @@ export const createLoctionSchema = z.object({
     .string()
     .min(1, "Укажите долготу")
     .regex(/^-?\d+(\.\d+)?$/, "Введите корректное значение долготы"),
+  containers: z
+    .array(containerSchema)
+    .min(1, "Добавьте хотя бы один контейнер"),
 });
 
 export type TCreateLocation = z.infer<typeof createLoctionSchema>;
