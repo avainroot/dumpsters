@@ -16,7 +16,7 @@ const Company = ({
   onChange,
   error,
 }: {
-  value: number | null;
+  value?: number | null;
   onChange: (value: number | null) => void;
   error?: boolean;
 }) => {

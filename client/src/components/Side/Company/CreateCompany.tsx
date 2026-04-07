@@ -47,18 +47,25 @@ const CreateCompany = ({ onCreate }: { onCreate: (value: number) => void }) => {
     onSuccess: async ({ id, name, phone, email }) => {
       await queryClient.invalidateQueries({ queryKey: ["companies"] });
       onCreate(id);
-      toast(`Добавлена новая управляющая компания ${name}`, {
-        description: (
-          <div className="flex flex-col gap-1">
-            <div>
-              <span className="font-medium">Телефон:</span> {phone}
+      toast.success(
+        <div className="text-lg">
+          Добавлена новая управляющая компания
+          <span className="text-green-700">{name}</span>
+        </div>,
+        {
+          className: "flex flex-col gap-2",
+          description: (
+            <div className="flex flex-col gap-1">
+              <div>
+                <span className="font-medium">Телефон:</span> {phone}
+              </div>
+              <div>
+                <span className="font-medium">E-mail:</span> {email}
+              </div>
             </div>
-            <div>
-              <span className="font-medium">E-mail:</span> {email}
-            </div>
-          </div>
-        ),
-      });
+          ),
+        },
+      );
       closeCompanyModal();
       form.reset();
     },

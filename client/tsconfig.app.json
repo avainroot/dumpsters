@@ -29,6 +29,7 @@
       "@components": ["./src/components/index.ts"],
       "@provider": ["./src/provider/index.ts"],
       "@components/ui/*": ["./src/components/ui/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
       "@/*": ["./src/*"]
     }

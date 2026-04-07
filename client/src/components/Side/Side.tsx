@@ -1,18 +1,24 @@
 import { Sheet } from "@components/ui/sheet";
 import { useMapStore } from "@/store";
-import CreateLocation from "./CreateLocation/CreateLocation";
-// import EditLocation from "./EditLocation/EditLocation";
+import LocationForm from "./LocationForm/LocationForm";
+import { defaultValuesPrepare } from "@lib/utils";
+import EditLocation from "./EditLocation/EditLocation";
+import SideWrapper from "./SideWrapper/SideWrapper";
 
 const Side = () => {
-  const { sheet, close } = useMapStore();
+  const { sheet, open, onOpenChange } = useMapStore();
+  const isEdit = sheet?.mode === "edit";
   return (
-    <Sheet
-      open={sheet !== null}
-      onOpenChange={(open) => !open && close()}
-      modal={false}
-    >
-      <CreateLocation />
-      {/* <EditLocation /> */}
+    <Sheet {...{ open, onOpenChange }}>
+      <SideWrapper>
+        {isEdit ? (
+          <EditLocation locationId={sheet.locationId} />
+        ) : (
+          <LocationForm
+            defaultValues={defaultValuesPrepare(sheet?.coordinates)}
+          />
+        )}
+      </SideWrapper>
     </Sheet>
   );
 };

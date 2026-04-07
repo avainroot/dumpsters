@@ -23,7 +23,7 @@ const handleResponse = async <T>(res: Response): Promise<T> => {
   if (!res.ok) {
     const body = await res.json().catch(() => ({ message: res.statusText }));
     const errorMessage = body.message ?? res.statusText;
-    toast(errorMessage);
+    toast.error(errorMessage);
     throw makeApiError(res.status, errorMessage);
   }
   return res.json();

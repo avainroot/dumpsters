@@ -1,25 +1,33 @@
 import type { LngLat } from "ymaps3";
 import { create } from "zustand";
 
-type Location = unknown;
-
 type SheetState =
   | null
   | { mode: "create"; coordinates: LngLat }
-  | { mode: "edit"; location: Location };
+  | { mode: "edit"; locationId: number };
 
 interface MapStore {
+  open: boolean;
   sheet: SheetState;
-  openCreate: (coordinates: LngLat) => void;
-  openEdit: (location: Location) => void;
-  close: () => void;
+  locationCreate: (coordinates: LngLat) => void;
+  locationEdit: (locationId: number) => void;
+  openPane: () => void;
+  closePane: () => void;
+  onOpenChange: (open: boolean) => void;
+  sheetReset: () => void;
 }
 
 export const useMapStore = create<MapStore>((set) => ({
+  open: false,
   sheet: null,
-  openCreate: (coordinates) => set({ sheet: { mode: "create", coordinates } }),
-  openEdit: (location) => set({ sheet: { mode: "edit", location } }),
-  close: () => set({ sheet: null }),
+  locationCreate: (coordinates) =>
+    set({ sheet: { mode: "create", coordinates }, open: true }),
+  locationEdit: (locationId) =>
+    set({ sheet: { mode: "edit", locationId }, open: true }),
+  openPane: () => set({ open: true }),
+  closePane: () => set({ open: false }),
+  onOpenChange: (open) => set({ open }),
+  sheetReset: () => set({ sheet: null }),
 }));
 
 interface CompanyModal {

@@ -25,6 +25,17 @@ export type TCompany = {
   updatedAt: string;
 };
 
+export type TBuilding = {
+  id: number;
+  address: string;
+};
+
+export interface IBuilding {
+  locationId: number;
+  buildingId: number;
+  building: TBuilding;
+}
+
 export interface ILocation {
   id: number;
   address: string;
@@ -35,14 +46,5 @@ export interface ILocation {
   companyId: number;
   company: TCompany;
   containers: TContainer[];
-  // "locationBuildings": [
-  //     {
-  //         "locationId": 1,
-  //         "buildingId": 1,
-  //         "building": {
-  //             "id": 1,
-  //             "address": "string"
-  //         }
-  //     }
-  // ]
+  locationBuildings: IBuilding[];
 }

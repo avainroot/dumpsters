@@ -1,6 +1,5 @@
 import AppProvider from "@provider";
-import { Layout, Side } from "@components";
-import { Spinner } from "@components/ui/spinner";
+import { Layout, Loader, Side } from "@components";
 import { lazy, Suspense } from "react";
 import { Toaster } from "@components/ui/sonner";
 
@@ -10,18 +9,12 @@ function App() {
   return (
     <AppProvider>
       <Layout>
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center flex-1">
-              <Spinner className="size-6" />
-            </div>
-          }
-        >
+        <Suspense fallback={<Loader />}>
           <Map />
         </Suspense>
 
         <Side />
-        <Toaster position="bottom-left" />
+        <Toaster position="bottom-left" duration={17000} />
       </Layout>
     </AppProvider>
   );

@@ -6,9 +6,13 @@ const phoneSchema = z.string().refine((val) => isValidPhoneNumber(val), {
 });
 
 export const containerSchema = z.object({
-  // id: z.number(),
   volumeLiters: z.number(),
   quantity: z.number(),
+});
+
+export const buildingSchema = z.object({
+  id: z.number(),
+  address: z.string(),
 });
 
 export const createLoctionSchema = z.object({
@@ -25,6 +29,7 @@ export const createLoctionSchema = z.object({
   containers: z
     .array(containerSchema)
     .min(1, "Добавьте хотя бы один контейнер"),
+  buildingIds: z.array(buildingSchema).min(1, "Добавьте хотя бы один дом"),
 });
 
 export type TCreateLocation = z.infer<typeof createLoctionSchema>;
