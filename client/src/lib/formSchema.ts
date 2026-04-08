@@ -17,7 +17,9 @@ export const buildingSchema = z.object({
 
 export const createLoctionSchema = z.object({
   address: z.string().min(1, "Укажите адрес площадки"),
-  companyId: z.number("Выберите управляющую компанию"),
+  companyId: z.number().refine((val) => val > 0, {
+    error: "Выберите управляющую компанию",
+  }),
   lat: z
     .string()
     .min(1, "Укажите широту")
