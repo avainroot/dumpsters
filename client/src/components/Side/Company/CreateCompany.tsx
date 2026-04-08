@@ -50,17 +50,18 @@ const CreateCompany = ({ onCreate }: { onCreate: (value: number) => void }) => {
       toast.success(
         <div className="text-lg">
           Добавлена новая управляющая компания
-          <span className="text-green-700">{name}</span>
+          <span className="text-green-700">{` ${name}`}</span>
         </div>,
         {
-          className: "flex flex-col gap-2",
           description: (
             <div className="flex flex-col gap-1">
               <div>
-                <span className="font-medium">Телефон:</span> {phone}
+                <span className="font-medium">Телефон: </span>
+                {phone}
               </div>
               <div>
-                <span className="font-medium">E-mail:</span> {email}
+                <span className="font-medium">E-mail: </span>
+                {email}
               </div>
             </div>
           ),

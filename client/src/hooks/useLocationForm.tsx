@@ -22,28 +22,59 @@ const useLocationForm = () => {
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ["locations"] });
 
-      toast.success(
-        <div className="text-lg mb-2">Создана новая площадка!</div>,
-        {
-          // className: "flex gap-2 items-start",
-          description: (
-            <div className="flex flex-col gap-1">
-              <div>
-                <span className="font-medium">Адрес: </span>
-                {data.address}
-              </div>
-              <div>
-                <span className="font-medium">Управляющая компания: </span>
-                {data.company.name}
-              </div>
-              <div>
-                <span className="font-medium">Количество контейнеров: </span>
-                {dumpCount(data.containers)}
-              </div>
+      toast.success(<div className="text-lg">Создана новая площадка!</div>, {
+        description: (
+          <div className="flex flex-col gap-1">
+            <div>
+              <span className="font-medium">Адрес: </span>
+              {data.address}
             </div>
-          ),
-        },
-      );
+            <div>
+              <span className="font-medium">Управляющая компания: </span>
+              {data.company.name}
+            </div>
+            <div>
+              <span className="font-medium">Количество контейнеров: </span>
+              {dumpCount(data.containers)}
+            </div>
+          </div>
+        ),
+      });
+
+      closePane();
+    },
+  });
+
+  const { mutate: saveLocation, isPending: savePending } = useMutation({
+    mutationFn: ({ id, ...data }: TCreateLocation & { id: string }) => {
+      return api.patch<ILocation>(`/locations/${id}`, {
+        ...data,
+        lat: Number(data.lat),
+        lng: Number(data.lng),
+        buildingIds: data.buildingIds.map((b) => b.id),
+      });
+    },
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["locations"] });
+      await queryClient.invalidateQueries({ queryKey: ["location", data.id] });
+      toast.success(<div className="text-lg">Площадка обновлена!</div>, {
+        description: (
+          <div className="flex flex-col gap-1">
+            <div>
+              <span className="font-medium">Адрес: </span>
+              {data.address}
+            </div>
+            <div>
+              <span className="font-medium">Управляющая компания: </span>
+              {data.company.name}
+            </div>
+            <div>
+              <span className="font-medium">Количество контейнеров: </span>
+              {dumpCount(data.containers)}
+            </div>
+          </div>
+        ),
+      });
 
       closePane();
     },
@@ -55,8 +86,7 @@ const useLocationForm = () => {
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ["locations"] });
-      toast.success(<div className="text-lg mb-2">Площадка удалена!</div>, {
-        className: "flex gap-2 items-start",
+      toast.success(<div className="text-lg">Площадка удалена!</div>, {
         description: (
           <div className="flex flex-col gap-1">
             <div>
@@ -73,9 +103,11 @@ const useLocationForm = () => {
     location: {
       add: addLocation,
       delete: deleteLocation,
+      save: saveLocation,
     },
     addPending,
     deletePending,
+    savePending,
   };
 };
 

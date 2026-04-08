@@ -27,7 +27,6 @@ import { useDebounceValue } from "usehooks-ts";
 
 const Buildings = () => {
   const { control } = useFormContext<TCreateLocation>();
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState<TBuilding | null>(null);
   const [debValue, setDebValue] = useDebounceValue<string>("", 300);
 
@@ -42,7 +41,8 @@ const Buildings = () => {
   const { data, isFetching } = useQuery(getBuildings(debValue));
 
   const { mutate: addBuilding, isPending: addingPending } = useMutation({
-    mutationFn: (data: Pick<TBuilding, "address">) => {
+    mutationFn: async (data: Pick<TBuilding, "address">) => {
+      await new Promise((r) => setTimeout(r, 500));
       return api.post<TBuilding>(`/buildings`, data);
     },
     onSuccess: async (data) => {
@@ -71,10 +71,19 @@ const Buildings = () => {
 
   const buildingList = useMemo(() => {
     const buildingData = data || [];
+
+    const selectedAddresses = new Set(
+      fields.map((f) => f.address.toLowerCase()),
+    );
+
+    const filteredData = buildingData.filter(
+      (b) => !selectedAddresses.has(b.address.toLowerCase()),
+    );
+
     return debValue.length
-      ? [...buildingData, { id: 0, address: debValue }]
-      : buildingData;
-  }, [data, debValue]);
+      ? [...filteredData, { id: 0, address: debValue }]
+      : filteredData;
+  }, [data, debValue, fields]);
 
   return (
     <Controller
@@ -96,10 +105,6 @@ const Buildings = () => {
                 setValue(b);
               }}
               onInputValueChange={setDebValue}
-              open={open}
-              onOpenChange={(openState) => {
-                setOpen(openState);
-              }}
               filter={null}
               disabled={addingPending}
             >
@@ -139,12 +144,16 @@ const Buildings = () => {
               size="icon"
               type="button"
             >
-              <HugeiconsIcon
-                icon={Add01Icon}
-                size={18}
-                color="currentColor"
-                strokeWidth={1.5}
-              />
+              {addingPending ? (
+                <Spinner />
+              ) : (
+                <HugeiconsIcon
+                  icon={Add01Icon}
+                  size={18}
+                  color="currentColor"
+                  strokeWidth={1.5}
+                />
+              )}
             </Button>
           </div>
 

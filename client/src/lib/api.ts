@@ -50,10 +50,3 @@ export const api = {
   delete: <T>(url: string): Promise<T> =>
     fetch(`${BASE_URL}${url}`, { method: "DELETE" }).then(handleResponse<T>),
 };
-
-// export const apiErrorHandler = (e: ApiError): string => {
-//   switch (e.status) {
-//     default:
-//       return "Что то пошло не так :(";
-//   }
-// };

@@ -1,7 +1,5 @@
 import { ymapsPromise } from "@lib/ymaps";
 import { use } from "react";
-// import Mark from "./Mark/Mark";
-// import type { TMark } from "@/types";
 import { useMapStore } from "@/store";
 import Locations from "./Locations/Locations";
 import type { LngLat } from "ymaps3";
@@ -34,11 +32,6 @@ const Map = () => {
               if (obj) return;
               handleMapClick(e.coordinates);
             }}
-            // onMouseDown={(obj, event) => {
-            //   if (obj) return;
-            //   const [lng, lat] = event.coordinates;
-            //   handleMapClick([lng, lat]);
-            // }}
           />
         </YMap>
       </div>

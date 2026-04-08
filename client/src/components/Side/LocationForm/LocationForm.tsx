@@ -28,7 +28,11 @@ const LocationForm = ({ defaultValues }: ILocationForm) => {
   });
 
   function onSubmit(data: TCreateLocation) {
-    location.add(data);
+    if (isEdit && locationId) {
+      location.save({ ...data, ...{ id: String(locationId) } });
+    } else {
+      location.add(data);
+    }
   }
 
   const handleDelete = () => {
@@ -40,9 +44,9 @@ const LocationForm = ({ defaultValues }: ILocationForm) => {
       <form
         id="form-create"
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex-1 flex flex-col"
+        className="flex-1 flex flex-col min-h-0"
       >
-        <div className="grid flex-1 auto-rows-min gap-6 px-4">
+        <div className="grid flex-1 auto-rows-min gap-6 px-4 overflow-y-auto min-h-0">
           <Controller
             name="address"
             control={form.control}

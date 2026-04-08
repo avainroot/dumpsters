@@ -34,6 +34,7 @@ export class BuildingsService {
     return this.prisma.building.findMany({
       where: search ? { address: { contains: search } } : undefined,
       orderBy: { address: 'asc' },
+      take: 5,
     });
   }
 

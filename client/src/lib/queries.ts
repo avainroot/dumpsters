@@ -33,6 +33,5 @@ export const getBuildings = (search?: string | null) => {
       await new Promise((r) => setTimeout(r, 300));
       return api.get<TBuilding[]>(`/buildings?search=${search}`);
     },
-    // enabled: !!id,
   };
 };
