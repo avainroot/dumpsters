@@ -130,3 +130,18 @@
     @apply font-mono;
   }
 }
+
+@theme {
+  --animate-marker-drop: markerDrop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes markerDrop {
+    from {
+      transform: translate(0, -100%);
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+  }
+}

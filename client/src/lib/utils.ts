@@ -28,14 +28,16 @@ export const locationTranform = ({
   };
 };
 
+export const coordFromArray = (coordinates: LngLat) => ({
+  lng: String(coordinates[0]),
+  lat: String(coordinates[1]),
+});
+
 export const defaultValuesPrepare = (coordinates?: LngLat) => {
   return coordinates
     ? {
         ...FORM_DEFAULT_VALUES,
-        ...{
-          lng: String(coordinates[0]),
-          lat: String(coordinates[1]),
-        },
+        ...coordFromArray(coordinates),
       }
     : FORM_DEFAULT_VALUES;
 };
