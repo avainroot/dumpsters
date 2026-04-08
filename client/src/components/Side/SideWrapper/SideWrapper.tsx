@@ -11,7 +11,12 @@ const SideWrapper = ({ children }: PropsWithChildren) => {
   const { open, sheet, sheetReset } = useMapStore();
   const isEdit = sheet?.mode === "edit";
   return (
-    <SheetContent onAnimationEnd={() => !open && sheetReset()}>
+    <SheetContent
+      onAnimationEnd={() => !open && sheetReset()}
+      overlayProps={{
+        className: "supports-backdrop-filter:backdrop-blur-none",
+      }}
+    >
       <SheetHeader>
         <SheetTitle>
           {isEdit ? "Редактировать площадку" : "Добавить площадку"}
